@@ -1,6 +1,18 @@
 #include <iostream>
 using namespace std;
 
+/*
+ - This program can be used as a simple student management system for a small school or educational institution. 
+
+ - It allows users to add new student records, remove existing records, search for specific students, and display all student records along with their GPAs.
+Additionally, it can calculate the average GPA of all students in the system.
+
+ - This system could be used by teachers or administrators to keep track of student information such as IDs, names, and GPAs.
+It provides a straightforward interface for managing student records without the need for complex database systems.
+*/
+
+
+
 // Node class to represent each student
 class Student_node
 {
