@@ -19,6 +19,9 @@ In this repository, you will find programs ranging from basic concepts like poin
 So far, the repository covers the following topics:
 
 - Arrays
+- Stack
+- Queue
+- Recursion
 - Linked Lists
   - Single Linked List
   - Double Linked List
@@ -26,6 +29,10 @@ So far, the repository covers the following topics:
   - Binary Tree
   - Complete/Strictly Binary Tree
   - Binary Search Tree (BST)
+- AVL Trees
+- Hashing
+- Heap
+- 
 
 Each topic includes implementations and examples to help you learn and explore the concepts further.
 
