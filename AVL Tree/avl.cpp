@@ -2,28 +2,25 @@
 using namespace std;
 
 /*
-Logic of the code:
-
-1. The code defines a Trunk struct for visual representation of the tree's branches during printing.
-2. The Node class represents each node in the AVL tree, storing data, pointers to left and right children, and the height of the node.
-3. The AVL class handles the AVL tree operations, including inserting nodes, updating heights, calculating balance factors, and performing rotations to keep the tree balanced.
-4. The insert function recursively adds a new value to the tree, updates the height of nodes, and performs necessary rotations to balance the tree.
-5. The rightRotate and leftRotate functions perform the required rotations to maintain the AVL tree balance.
-6. The printTree function, along with showTrunks, visually represents the tree structure with balance factors.
-7. The main function creates an instance of the AVL tree, inserts values into it, and displays the tree.
-
+## Logic of the Code:
+- The code implements a Binary Search Tree (BST) with insertion, deletion, and tree printing functionalities.
+- The `Node` class represents individual nodes in the BST with integer values and pointers to left and right child nodes.
+- The `BST` class manages the BST with functions for inserting nodes, deleting nodes (using case 3 of BST deletion), finding the minimum value in a subtree, and printing the tree structure.
+- The `Insert` function recursively inserts nodes into the BST based on their values.
+- The `Case3Deletion` function handles the deletion of a node with two children by finding the inorder successor, replacing the node's value with the successor's value, and then recursively deleting the successor.
+- The `minvalue` function finds the smallest node in a subtree.
+- The `printTree` function prints the BST structure in a readable format, showing branches and nodes.
+- In the `main` function, nodes are inserted into the BST, and then a node is deleted using the `Case3Deletion` function. The tree structure is printed before and after the deletion.
 */
 
 
-
-
-// Trunk struct is used to assist in visual representation of the tree
+// Structure to represent branches in the tree visualization
 struct Trunk
 {
-    Trunk *prev; // Pointer to the previous trunk in the chain
-    string str;  // String to be printed for the trunk
+    Trunk *prev;  // Pointer to the previous trunk
+    string str;   // String to represent the trunk
 
-    // Constructor to initialize trunk with previous trunk and string
+    // Constructor for Trunk structure
     Trunk(Trunk *prev, string str)
     {
         this->prev = prev;
@@ -31,163 +28,143 @@ struct Trunk
     }
 };
 
-// Function to print all the trunks in the chain
+// Helper function to print branches of the binary tree
 void showTrunks(Trunk *p)
 {
     if (p == NULL)
         return;
 
-    showTrunks(p->prev); // Recursive call to print the previous trunk
-    cout << p->str;      // Print the current trunk's string
+    showTrunks(p->prev);  // Recursively print previous trunks
+    cout << p->str;
 }
 
-// Node class representing each node in the AVL tree
+// Node class to represent each node in the binary search tree
 class Node
 {
-public:
-    int data;    // Data stored in the node
-    Node *left;  // Pointer to the left child
-    Node *right; // Pointer to the right child
-    int height;  // Height of the node
+private:
+    int num;         // Value of the node
+    Node *right;     // Pointer to the right child node
+    Node *left;      // Pointer to the left child node
 
-    // Constructor to initialize a new node with given value
-    Node(int val)
-    {
-        data = val;
-        left = right = NULL;
-        height = 1;
-    }
-    friend int main(); // Friend function declaration to access private members of Node
+public:
+    // Constructors
+    Node() : right(NULL), left(NULL) {}  // Default constructor
+    Node(int num) : num(num), right(NULL), left(NULL) {}  // Parameterized constructor
+
+    // Friend class and function declaration to allow BST access to private members
+    friend class BST;
+    friend int main();
 };
 
-// AVL class representing the AVL tree and its operations
-class AVL
+// Binary Search Tree class
+class BST
 {
 private:
-    Node *root; // Pointer to the root of the AVL tree
+    Node *Root;  // Pointer to the root node of the BST
 
 public:
-    // Constructor to initialize an empty AVL tree
-    AVL()
-    {
-        root = NULL;
-    }
-    friend int main(); // Friend function declaration to access private members of AVL
+    // Constructor
+    BST() : Root(nullptr) {}
 
-    // Function to insert a new value into the AVL tree and balance it
-    Node *insert(Node *node, int num)
+    // Function to insert a new node into the BST
+    Node *Insert(Node *node, int num)
     {
-        // If the node is NULL, create a new node with the given value
+        // If the current node is null, create a new node
         if (node == NULL)
         {
             Node *temp = new Node(num);
-            if (root == NULL)
+            if (Root == NULL)
             {
-                root = temp; // Set root to the new node if tree is empty
+                Root = temp;  // Set the new node as the root if the tree is empty
             }
             return temp;
         }
 
-        // Recur down the tree to insert the value in the correct position
-        if (num < node->data)
+        // Recursively insert into the left or right subtree
+        if (num > node->num)
         {
-            node->left = insert(node->left, num);
+            node->right = Insert(node->right, num);
         }
-        else if (num > node->data)
+        else if (num < node->num)
         {
-            node->right = insert(node->right, num);
+            node->left = Insert(node->left, num);
         }
-
-        // Update the height of the current node
-        node->height = Update_height(node);
-        int balance = getBalance(node); // Get the balance factor of the node
-
-        // Perform rotations to balance the node if needed
-        if (balance > 1)
+        else
         {
-            if (num < node->right->data)
-            {
-                node->right = rightRotate(node->right);
-            }
-            return leftRotate(node);
+            cout << "Already Exists!!! " << endl;  // Print a message if the value already exists
         }
-        else if (balance < -1)
-        {
-            if (num > node->left->data)
-            {
-                node->left = leftRotate(node->left);
-            }
-            return rightRotate(node);
-        }
-
-        return node; // Return the balanced node
+        return node;
     }
 
-    // Function to get the height of a node
-    int getHeight(Node *node)
+    // Function to delete a node from the BST using case 3
+    void Case3Deletion(Node *&node, int num)
+    {
+        // Check if the current node is NULL (base case for recursion)
+        if (node == NULL)
+        {
+            cout << "Node not Found !!!" << endl;
+            return;
+        }
+
+        // If the value to be deleted is less than the current node's value,
+        // recursively delete from the left subtree
+        if (num < node->num)
+        {
+            Case3Deletion(node->left, num);
+        }
+        // If the value to be deleted is greater than the current node's value,
+        // recursively delete from the right subtree
+        else if (num > node->num)
+        {
+            Case3Deletion(node->right, num);
+        }
+        // If the current node is the node to be deleted
+        else
+        {
+            // If the current node has no left child, replace it with its right child
+            if (node->left == NULL)
+            {
+                Node *temp = node->right;
+                delete node;
+                node = temp;
+            }
+            // If the current node has no right child, replace it with its left child
+            else if (node->right == NULL)
+            {
+                Node *temp = node->left;
+                delete node;
+                node = temp;
+            }
+            // If the current node has both left and right children
+            else
+            {
+                // Find the inorder successor (smallest node in the right subtree)
+                Node *successor = minvalue(node->right);
+                // Copy its value to the current node
+                node->num = successor->num;
+                // Recursively delete the inorder successor
+                Case3Deletion(node->right, successor->num);
+            }
+            // Print a message indicating successful deletion
+            cout << " The value " << num << " Deleted Successfully." << endl;
+        }
+    }
+
+    // Function to find the minimum value node in a subtree
+    Node *minvalue(Node *node)
     {
         if (node == NULL)
         {
-            return 0;
+            return NULL;
         }
-        return node->height;
-    }
-
-    // Function to update the height of a node based on its children's heights
-    int Update_height(Node *node)
-    {
-        if (node == nullptr)
+        if (node->left == NULL)
         {
-            return 0;
+            return node;
         }
-
-        int leftHeight = getHeight(node->left);
-        int rightHeight = getHeight(node->right);
-
-        return 1 + ((leftHeight > rightHeight) ? leftHeight : rightHeight);
+        return minvalue(node->left);
     }
 
-    // Function to get the balance factor of a node
-    int getBalance(Node *node)
-    {
-        if (node == NULL)
-        {
-            return 0;
-        }
-        return getHeight(node->right) - getHeight(node->left);
-    }
-
-    // Function to perform a right rotation on a node
-    Node *rightRotate(Node *y)
-    {
-        Node *x = y->left;
-        Node *T = x->right;
-
-        x->right = y;
-        y->left = T;
-
-        y->height = Update_height(y);
-        x->height = Update_height(x);
-
-        return x;
-    }
-
-    // Function to perform a left rotation on a node
-    Node *leftRotate(Node *x)
-    {
-        Node *y = x->right;
-        Node *T = y->left;
-
-        y->left = x;
-        x->right = T;
-
-        x->height = Update_height(x);
-        y->height = Update_height(y);
-
-        return y;
-    }
-
-    // Function to print the AVL tree with trunks
+    // Function to print the binary search tree (BST) in order
     void printTree(Node *root, Trunk *prev, bool isRight)
     {
         if (root == NULL)
@@ -196,7 +173,7 @@ public:
         string prev_str = "    ";
         Trunk *trunk = new Trunk(prev, prev_str);
 
-        printTree(root->right, trunk, true);
+        printTree(root->right, trunk, true);  // Print right subtree
 
         if (!prev)
             trunk->str = "---";
@@ -211,39 +188,42 @@ public:
             prev->str = prev_str;
         }
 
-        showTrunks(trunk);
-        cout << root->data << " (Balance: " << getBalance(root) << ")" << endl;
+        showTrunks(trunk);  // Print the trunk
+        cout << root->num << endl;
 
         if (prev)
             prev->str = prev_str;
         trunk->str = "   |";
 
-        printTree(root->left, trunk, false);
-    }
-
-    // Wrapper function to insert a value into the AVL tree
-    void insert(int val)
-    {
-        root = insert(root, val);
-    }
-
-    // Function to display the AVL tree
-    void display()
-    {
-        printTree(root, NULL, false);
+        printTree(root->left, trunk, false);  // Print left subtree
     }
 };
 
 int main()
 {
-    AVL A;
+    BST bl;
 
-    A.insert(15);
-    A.insert(20);
-    A.insert(30);
+    // Insert nodes into the BST
+    bl.Insert(bl.Root, 50);
+    bl.Insert(bl.Root, 30);
+    bl.Insert(bl.Root, 70);
+    bl.Insert(bl.Root, 20);
+    bl.Insert(bl.Root, 40);
+    bl.Insert(bl.Root, 60);
+    bl.Insert(bl.Root, 80);
 
     cout << endl;
-    A.display();
+    cout << "Before Deletion Using 3rd Case (using inOrder Traverser)" << endl;
+    bl.printTree(bl.Root, NULL, false);
+    cout << endl << endl;
+
+    // Delete a node from the BST
+    bl.Case3Deletion(bl.Root, 50);
+    cout << endl;
+
+    cout << "After Deletion Using 3rd Case (using inOrder Traverser)" << endl;
+    bl.printTree(bl.Root, NULL, false);
+    cout << endl;
 
     return 0;
 }
