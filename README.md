@@ -32,7 +32,6 @@ So far, the repository covers the following topics:
 - AVL Trees
 - Hashing
 - Heap
-- 
 
 Each topic includes implementations and examples to help you learn and explore the concepts further.
 
